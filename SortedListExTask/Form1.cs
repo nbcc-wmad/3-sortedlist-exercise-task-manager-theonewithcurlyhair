@@ -26,13 +26,11 @@ namespace SortedListExTask
 
                 tasks.Add(dtpTaskDate.Value, txtTask.Text);
 
-                //foreach (var item in tasks)
-                //{
-                //    lstTasks.Items.Add(item.Key.ToShortDateString());
-                //}
+                lstTasks.DataSource = new BindingSource(tasks, null);
+                lstTasks.DisplayMember = "Key";
+                lstTasks.ValueMember = "Value";
 
-
-
+                lstTasks.ClearSelected();
                 txtTask.Clear();
             }
             catch(Exception ex)
@@ -46,11 +44,31 @@ namespace SortedListExTask
         {
             if(lstTasks.SelectedIndex == -1) { MessageBox.Show("you need to select a task you want to delete", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
 
+            foreach (var field in tasks.Where(t => t.Value == lstTasks.SelectedValue))
+            {
+                tasks.Remove(field.Key);
+                break;
+            }
+            
+            
+            lstTasks.ClearSelected();
+            lblTaskDetails.ResetText();
+
         }
 
         private void btnPrintAll_Click(object sender, EventArgs e)
         {
+            string msg = "";
+            foreach (var item in tasks)
+            {
+                msg += $"{item.Key} {item.Value} \n";
+            }
+            MessageBox.Show(msg);
+        }
 
+        private void lstTasks_Click(object sender, EventArgs e)
+        {
+            lblTaskDetails.Text = lstTasks.SelectedValue.ToString();
         }
     }
 }

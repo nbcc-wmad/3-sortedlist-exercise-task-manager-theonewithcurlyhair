@@ -69,6 +69,7 @@
             this.lstTasks.Name = "lstTasks";
             this.lstTasks.Size = new System.Drawing.Size(372, 179);
             this.lstTasks.TabIndex = 14;
+            this.lstTasks.Click += new System.EventHandler(this.lstTasks_Click);
             // 
             // btnPrintAll
             // 
