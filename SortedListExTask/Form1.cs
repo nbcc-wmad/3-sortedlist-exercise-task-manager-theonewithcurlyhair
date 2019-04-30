@@ -12,7 +12,7 @@ namespace SortedListExTask
 {
     public partial class Form1 : Form
     {
-        Dictionary<DateTime, string> tasks = new Dictionary<DateTime, string>();
+        Dictionary<string, string> tasks = new Dictionary<string, string>();
         public Form1()
         {
             InitializeComponent();
@@ -22,21 +22,29 @@ namespace SortedListExTask
         {
             try
             {
-                if (txtTask.Text == "") { MessageBox.Show("You need to enter a task", "Invalid Data", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+                if (txtTask.Text.Trim() == "") { MessageBox.Show("You need to enter a task", "Invalid Data", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
 
-                tasks.Add(dtpTaskDate.Value, txtTask.Text);
+                tasks.Add(dtpTaskDate.Value.ToShortDateString(), txtTask.Text);
 
-                lstTasks.DataSource = new BindingSource(tasks, null);
-                lstTasks.DisplayMember = "Key";
-                lstTasks.ValueMember = "Value";
-
-                lstTasks.ClearSelected();
-                txtTask.Clear();
+                DisplayTask();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Only one task per date is allowed", "Invalid Data", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+        }
+
+        private void DisplayTask()
+        {
+            lstTasks.DataSource = new BindingSource(tasks, null);
+            lstTasks.DisplayMember = "Key";
+            lstTasks.ValueMember = "Value";
+
+            lstTasks.ClearSelected();
+            txtTask.Clear();
+
+            if(tasks.Count == 0) { lstTasks.DataSource = null; }
 
         }
 
@@ -49,11 +57,11 @@ namespace SortedListExTask
                 tasks.Remove(field.Key);
                 break;
             }
-            
+
+            DisplayTask();
             
             lstTasks.ClearSelected();
             lblTaskDetails.ResetText();
-
         }
 
         private void btnPrintAll_Click(object sender, EventArgs e)
@@ -67,6 +75,18 @@ namespace SortedListExTask
         }
 
         private void lstTasks_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DisplayTaskInLabel();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void DisplayTaskInLabel()
         {
             lblTaskDetails.Text = lstTasks.SelectedValue.ToString();
         }
